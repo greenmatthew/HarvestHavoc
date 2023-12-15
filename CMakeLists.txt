@@ -1,13 +1,3 @@
-# @file    CMakeLists.txt
-# @author  Matthew Green
-# @date    2023-11-30 13:47:14
-# 
-# @section LICENSE
-# 
-# Copyright (c) 2023 Matthew Green - All rights reserved
-# Unauthorized copying of this file, via any medium is strictly prohibited
-# Proprietary and confidential
-
 cmake_minimum_required(VERSION 3.10)
 cmake_policy(SET CMP0079 NEW)
 
@@ -23,23 +13,30 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT H
 # Additional libs
 add_subdirectory(libs)
 
-add_subdirectory(velecs)
-add_subdirectory(harvest_havoc)
+# Define the HarvestHavoc executable
+file(GLOB_RECURSE HARVEST_HAVOC_HEADERS "include/*.h")
+file(GLOB_RECURSE HARVEST_HAVOC_SOURCES "src/*.cpp")
 
-find_package(Vulkan REQUIRED)
+add_executable(HarvestHavoc ${HARVEST_HAVOC_SOURCES} ${HARVEST_HAVOC_HEADERS})
 
-target_link_libraries(velecs
-    Vulkan::Vulkan
-    SDL2
-    SDL2main
-    glm
-    vma
-    flecs::flecs_static
-    vk-bootstrap
-    imgui
-    assimp
+set_target_properties(HarvestHavoc PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${FINAL_OUTPUT_BASE_DIR}/$<CONFIG>"
 )
 
-target_link_libraries(HarvestHavoc PRIVATE
-    velecs
+target_include_directories(HarvestHavoc PUBLIC include)
+
+# Link against velecs library
+target_link_libraries(HarvestHavoc PRIVATE velecs)
+
+# Organize source files in IDE
+get_filename_component(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" ABSOLUTE)
+source_group(
+    TREE "${ROOT_DIR}/include"
+    PREFIX "Header Files"
+    FILES ${HARVEST_HAVOC_HEADERS}
+)
+source_group(
+    TREE "${ROOT_DIR}/src"
+    PREFIX "Source Files"
+    FILES ${HARVEST_HAVOC_SOURCES}
 )
