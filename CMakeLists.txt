@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
-cmake_policy(SET CMP0079 NEW)
 
 project(HarvestHavoc)
+
+cmake_policy(SET CMP0079 NEW)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -28,6 +29,39 @@ target_include_directories(HarvestHavoc PUBLIC include)
 # Link against velecs library
 target_link_libraries(HarvestHavoc PRIVATE velecs)
 
+#########################################################################################
+### Start of DLL handling ###############################################################
+#########################################################################################
+
+# Define a variable for the system directory
+set(SYSTEM_DIR "C:/Windows/System32/")
+
+add_custom_command(TARGET HarvestHavoc POST_BUILD
+    COMMENT "Copying DLLs to output directory"
+    # Copy common DLLs
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SYSTEM_DIR}vulkan-1.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$ENV{VULKAN_SDK}/Bin/SDL2.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+
+    # Copy Debug DLLs
+    COMMAND $<$<CONFIG:Debug>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}msvcp140d.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    COMMAND $<$<CONFIG:Debug>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}vcruntime140d.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    COMMAND $<$<CONFIG:Debug>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}vcruntime140_1d.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    COMMAND $<$<CONFIG:Debug>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}ucrtbased.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    
+    # Copy Release DLLs
+    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}msvcp140.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}vcruntime140.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> -E copy_if_different "${SYSTEM_DIR}vcruntime140_1.dll" $<TARGET_FILE_DIR:HarvestHavoc>
+)
+
+#########################################################################################
+### End of DLL handling #################################################################
+#########################################################################################
+
+#########################################################################################
+### Start of Organize source files in IDE ###############################################
+#########################################################################################
+
 # Organize source files in IDE
 get_filename_component(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" ABSOLUTE)
 source_group(
@@ -40,3 +74,7 @@ source_group(
     PREFIX "Source Files"
     FILES ${HARVEST_HAVOC_SOURCES}
 )
+
+#########################################################################################
+### End of Organize source files in IDE #################################################
+#########################################################################################
