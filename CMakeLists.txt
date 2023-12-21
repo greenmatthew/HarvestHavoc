@@ -18,7 +18,7 @@ add_subdirectory(libs)
 file(GLOB_RECURSE HARVEST_HAVOC_HEADERS "include/*.h")
 file(GLOB_RECURSE HARVEST_HAVOC_SOURCES "src/*.cpp")
 
-add_executable(HarvestHavoc ${HARVEST_HAVOC_SOURCES} ${HARVEST_HAVOC_HEADERS})
+add_executable(HarvestHavoc ${HARVEST_HAVOC_SOURCES} ${HARVEST_HAVOC_HEADERS} src/version.rc)
 
 set_target_properties(HarvestHavoc PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${FINAL_OUTPUT_BASE_DIR}/$<CONFIG>"
