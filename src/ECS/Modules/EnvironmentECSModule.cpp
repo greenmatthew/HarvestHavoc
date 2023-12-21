@@ -158,7 +158,7 @@ void EnvironmentECSModule::ShowInteractMessage() const
     ImVec2 windowSize = ImGui::GetIO().DisplaySize;
 
     // Calculate the position to place the message at the lower middle part of the screen
-    ImVec2 windowPos = ImVec2(windowSize.x / 2, windowSize.y * 0.8);
+    ImVec2 windowPos = ImVec2(windowSize.x * 0.5f, windowSize.y * 0.8f);
     ImVec2 windowPivot = ImVec2(0.5f, 0.5f); // Center the window on the calculated position
 
     // Begin the ImGui window
