@@ -32,6 +32,9 @@ PlayerECSModule::PlayerECSModule(flecs::world& ecs)
     ecs.import<PhysicsECSModule>();
     ecs.import<NametagECSModule>();
 
+    flecs::entity renderingECSModule = ecs.lookup("velecs::RenderingECSModule");
+    const Rect extent = renderingECSModule.get<RenderingECSModule>()->GetWindowExtent();
+
     flecs::entity trianglePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_TriangleRender");
     flecs::entity squarePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_SquareRender");
 
@@ -43,9 +46,6 @@ PlayerECSModule::PlayerECSModule(flecs::world& ecs)
     player.get_mut<Material>()->color = Color32::GREEN;
     // player.set_override<SimpleMesh>({SimpleMesh::MONKEY()});
     
-    flecs::entity renderingECSModule = ecs.lookup("velecs::RenderingECSModule");
-    const Rect extent = renderingECSModule.get<RenderingECSModule>()->GetWindowExtent();
-
     flecs::entity cameraEntity = RenderingECSModule::CreatePerspectiveCamera(ecs, Vec3{0.0f, 0.0f, -10.0f}, Vec3{0.0f, 0.0f, 0.0f}, extent.max.x / extent.max.y);
     cameraEntity.child_of(player);
 
@@ -83,8 +83,7 @@ PlayerECSModule::PlayerECSModule(flecs::world& ecs)
             flecs::entity cameraEntity = mainCameraEntity.get<MainCamera>()->camera;
             Transform * const cameraTransform = cameraEntity.get_mut<Transform>();
 
-            flecs::entity inputEntity = ecs.singleton<Input>();
-            const Input* const input = inputEntity.get<Input>();
+            const Input* const input = ecs.get<Input>();
 
             for (auto i : it)
             {
