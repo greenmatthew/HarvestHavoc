@@ -13,6 +13,7 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT H
 
 # Additional libs
 add_subdirectory(libs)
+add_subdirectory(assets)
 
 # Define the HarvestHavoc executable
 file(GLOB_RECURSE HARVEST_HAVOC_HEADERS "include/*.h")
@@ -28,6 +29,8 @@ target_include_directories(HarvestHavoc PUBLIC include)
 
 # Link against velecs library
 target_link_libraries(HarvestHavoc PRIVATE velecs)
+
+add_dependencies(HarvestHavoc assets)
 
 #########################################################################################
 ### Start of DLL handling ###############################################################
