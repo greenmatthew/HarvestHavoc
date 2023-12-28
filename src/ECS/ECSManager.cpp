@@ -16,6 +16,7 @@
 
 #include "ECS/Modules/EnvironmentECSModule.h"
 #include "ECS/Modules/PlayerECSModule.h"
+#include "ECS/Modules/MenusECSModule.h"
 
 using namespace velecs;
 
@@ -34,6 +35,8 @@ ECSManager::ECSManager(velecs::VelECSEngine& engine)
     ecs.import<EnvironmentECSModule>();
     
     ecs.import<PlayerECSModule>();
+
+    ecs.import<MenusECSModule>();
 }
 
 // Public Methods
