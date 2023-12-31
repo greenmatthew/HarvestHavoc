@@ -35,7 +35,7 @@ MenusECSModule::MenusECSModule(flecs::world& ecs)
         .kind(stages->Draw)
         .iter([this](flecs::iter& it)
             {
-                DisplayInventoryAndCraftingMenus();
+                // DisplayInventoryAndCraftingMenus();
             }
         );
 }

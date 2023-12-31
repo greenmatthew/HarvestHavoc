@@ -16,6 +16,8 @@
 
 #include <imgui.h>
 
+#include <velecs/Math/GLMUtility.h>
+
 using namespace velecs;
 
 namespace hh {
@@ -38,7 +40,7 @@ PlayerECSModule::PlayerECSModule(flecs::world& ecs)
     flecs::entity trianglePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_TriangleRender");
     flecs::entity squarePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_SquareRender");
 
-    flecs::entity player = Nametag::AddTo(ecs, Entity::Create(ecs, "Player")
+    flecs::entity player = Nametag::AddTo(ecs, Entity::Create(ecs, "Player", Vec3::BACKWARD * 0.001f)
         .is_a(trianglePrefab)
         .add<Player>()
         .add<LinearKinematics>()
@@ -46,7 +48,7 @@ PlayerECSModule::PlayerECSModule(flecs::world& ecs)
     player.get_mut<Material>()->color = Color32::GREEN;
     // player.set_override<SimpleMesh>({SimpleMesh::MONKEY()});
     
-    flecs::entity cameraEntity = RenderingECSModule::CreatePerspectiveCamera(ecs, Vec3{0.0f, 0.0f, -10.0f}, Vec3{0.0f, 0.0f, 0.0f}, extent.max.x / extent.max.y);
+    flecs::entity cameraEntity = RenderingECSModule::CreatePerspectiveCamera(ecs, Vec3::BACKWARD * 10.0f, Vec3::ZERO, extent.max.x / extent.max.y);
     cameraEntity.child_of(player);
 
     ecs.set<MainCamera>({cameraEntity, extent});
@@ -144,7 +146,7 @@ void PlayerECSModule::HandleInput
     (
         cameraTransform->position.x,
         cameraTransform->position.y,
-        std::clamp(player.targetCamPos.z - input->mouseWheel.y, -player.camMaxZoom, -player.camMinZoom)
+        std::clamp(player.targetCamPos.z - input->mouseWheel.y, player.camMinZoom, player.camMaxZoom)
     );
     // Max and min are flipped and negative bc of the coordinate system
     cameraTransform->position = Vec3::Lerp(cameraTransform->position, player.targetCamPos, player.camZoomSpeed * deltaTime);
