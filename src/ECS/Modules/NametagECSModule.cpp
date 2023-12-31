@@ -37,12 +37,13 @@ NametagECSModule::NametagECSModule(flecs::world& ecs)
             flecs::entity cameraEntity = mainCameraEntity.get<MainCamera>()->camera;
             const Transform* const cameraTransform = cameraEntity.get<Transform>();
             const PerspectiveCamera* const perspectiveCamera = cameraEntity.get<PerspectiveCamera>();
+            Vec2 screenRes = it.world().get<MainCamera>()->extent.max;
 
             for (auto i : it)
             {
                 Transform& transform = transforms[i];
                 Nametag& nametag = nametags[i];
-                nametag.Display(transform, cameraTransform, perspectiveCamera);
+                nametag.Display(transform, cameraTransform, perspectiveCamera, screenRes);
             }
         }
     );

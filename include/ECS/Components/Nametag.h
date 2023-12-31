@@ -54,7 +54,8 @@ public:
     (
         const velecs::Transform& transform,
         const velecs::Transform* const cameraTransform,
-        const velecs::PerspectiveCamera* const perspectiveCamera
+        const velecs::PerspectiveCamera* const perspectiveCamera,
+        const velecs::Vec2 screenRes
     ) const;
 
 protected:

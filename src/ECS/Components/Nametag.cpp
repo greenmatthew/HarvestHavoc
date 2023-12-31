@@ -57,10 +57,16 @@ void Nametag::Display
 (
     const Transform& transform,
     const Transform* const cameraTransform,
-    const PerspectiveCamera* const perspectiveCamera
+    const PerspectiveCamera* const perspectiveCamera,
+    const Vec2 screenRes
 ) const
 {
     Vec2 screenPos = transform.GetScreenPosition(cameraTransform, perspectiveCamera);
+    if (screenPos.x < 0.0f || screenPos.y < 0.0f || screenPos.x > screenRes.x || screenPos.y > screenRes.y)
+    {
+        return;
+    }
+
     ImVec2 windowPos = ImVec2(screenPos.x, screenPos.y);
     ImVec2 windowPivotPos = ImVec2(0.5f, 0.5f);
     ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivotPos);
