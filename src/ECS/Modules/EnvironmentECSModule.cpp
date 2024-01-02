@@ -27,32 +27,25 @@ EnvironmentECSModule::EnvironmentECSModule(flecs::world& ecs)
     ecs.import<NametagECSModule>();
     ecs.import<InputECSModule>();
 
-    flecs::entity squarePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_SquareRender");
-    flecs::entity ironNodeChunkPrefab = ecs.prefab("PR_IronNode")
-        .is_a(squarePrefab)
+    flecs::entity squarePrefab = Prefab::Find("velecs::RenderingECSModule::PR_SquareRender");
+
+    flecs::entity ironNodeChunkPrefab = Prefab::CreateFromPrefab("PR_IronNode", squarePrefab)
         .override<IronVein>()
         ;
-    ironNodeChunkPrefab.get_mut<Transform>()->entity = ironNodeChunkPrefab;
     ironNodeChunkPrefab.get_mut<Material>()->color = Color32::SILVER;
 
-    flecs::entity ironNode = Entity::Create(ecs, "Iron Node", Vec3::LEFT * 6.0f)
-        .add<IronNode>();
-    Nametag::AddTo(ecs, ironNode, Vec3::ZERO);
+    flecs::entity ironNode = Entity::Create(Vec3::LEFT * 6.0f)
+        .add<IronNode>()
+        ;
+    ironNode.set_name("Iron Node");
+    Nametag::AddTo(ecs, ironNode, "Iron Node", Vec3::ZERO);
 
-    Entity::Create(ecs, ironNode, Vec3::ZERO)
-        .is_a(ironNodeChunkPrefab);
-
-    Entity::Create(ecs, ironNode, Vec3::UP)
-        .is_a(ironNodeChunkPrefab);
-
-    Entity::Create(ecs, ironNode, Vec3::DOWN)
-        .is_a(ironNodeChunkPrefab);
-
-    Entity::Create(ecs, ironNode, Vec3::RIGHT)
-        .is_a(ironNodeChunkPrefab);
-
-    Entity::Create(ecs, ironNode, Vec3::LEFT)
-        .is_a(ironNodeChunkPrefab);
+    flecs::entity test = Entity::CreateFromPrefab(ironNodeChunkPrefab,  Vec3::ZERO, None, None, ironNode);
+    std::cout << test.parent().name() << std::endl;
+    Entity::CreateFromPrefab(ironNodeChunkPrefab,    Vec3::UP, None, None, ironNode);
+    Entity::CreateFromPrefab(ironNodeChunkPrefab,  Vec3::DOWN, None, None, ironNode);
+    Entity::CreateFromPrefab(ironNodeChunkPrefab, Vec3::RIGHT, None, None, ironNode);
+    Entity::CreateFromPrefab(ironNodeChunkPrefab,  Vec3::LEFT, None, None, ironNode);
 
     ecs.system()
         .kind(stages->Draw)

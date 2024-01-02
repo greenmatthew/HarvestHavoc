@@ -28,7 +28,7 @@ Nametag::Nametag(const std::string& name)
 
 flecs::entity& Nametag::AddTo(flecs::world& ecs, flecs::entity entity, const std::string& name, const Vec3 offset)
 {
-    flecs::entity nametagEntity = Entity::Create(ecs, "", offset, Vec3::ZERO, Vec3::ONE, entity);
+    flecs::entity nametagEntity = Entity::Create(offset, None, None, entity);
     if (!name.empty())
     {
         nametagEntity.set_override<Nametag>({name});

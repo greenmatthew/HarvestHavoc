@@ -37,41 +37,44 @@ PlayerECSModule::PlayerECSModule(flecs::world& ecs)
     flecs::entity renderingECSModule = ecs.lookup("velecs::RenderingECSModule");
     const Rect extent = renderingECSModule.get<RenderingECSModule>()->GetWindowExtent();
 
-    flecs::entity trianglePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_TriangleRender");
-    flecs::entity squarePrefab = CommonECSModule::GetPrefab(ecs, "velecs::RenderingECSModule::PR_SquareRender");
+    flecs::entity trianglePrefab = Prefab::Find("velecs::RenderingECSModule::PR_TriangleRender");
+    flecs::entity squarePrefab = Prefab::Find("velecs::RenderingECSModule::PR_SquareRender");
 
-    flecs::entity player = Nametag::AddTo(ecs, Entity::Create(ecs, "Player", Vec3::BACKWARD * 0.001f)
-        .is_a(trianglePrefab)
+    flecs::entity player = Entity::CreateFromPrefab(trianglePrefab, Vec3::BACKWARD * 0.001f)
         .add<Player>()
         .add<LinearKinematics>()
-    );
+        ;
+    player.set_name("Player");
     player.get_mut<Material>()->color = Color32::GREEN;
     // player.set_override<SimpleMesh>({SimpleMesh::MONKEY()});
+
+    Nametag::AddTo(ecs, player, "Player");
+
     
     flecs::entity cameraEntity = RenderingECSModule::CreatePerspectiveCamera(ecs, Vec3::BACKWARD * 10.0f, Vec3::ZERO, extent.max.x / extent.max.y);
     cameraEntity.child_of(player);
-
     ecs.set<MainCamera>({cameraEntity, extent});
 
-    flecs::entity entity = Nametag::AddTo(ecs, Entity::Create(ecs, "Entity1", Vec3::UP + Vec3::RIGHT, Vec3::ZERO, Vec3::ONE * 0.1f)
-            .is_a(trianglePrefab)
-        );
-    entity.get_mut<Material>()->color = Color32::MAGENTA;
+    Entity::CreateFromPrefab(squarePrefab, Vec3::UP, Vec3::ZERO, Vec3::ONE * 0.1f);
+    Entity::CreateFromPrefab(squarePrefab, Vec3::DOWN, Vec3::ZERO, Vec3::ONE * 0.1f);
 
-    entity = Nametag::AddTo(ecs, Entity::Create(ecs, "Entity2", Vec3::UP + Vec3::LEFT, Vec3::ZERO, Vec3::ONE * 0.1f)
-            .is_a(squarePrefab)
+    Transform transform;
+    transform.scale = Vec3::ONE * 0.1f;
+    for (int i = 0; i < 4; ++i)
+    {
+        transform.position = (i >= 2 ? Vec3::UP : Vec3::DOWN) + (i % 2 == 0 ? Vec3::RIGHT : Vec3::LEFT);
+        flecs::entity entity = Nametag::AddTo
+        (
+            ecs,
+            Entity::CreateFromPrefab
+            (
+                i % 2 == 0 ? trianglePrefab : squarePrefab,
+                transform
+            ),
+            "Entity " + std::to_string(i+1)
         );
-    entity.get_mut<Material>()->color = Color32::MAROON;
-
-    entity = Nametag::AddTo(ecs, Entity::Create(ecs, "Entity3", Vec3::DOWN + Vec3::LEFT, Vec3::ZERO, Vec3::ONE * 0.1f)
-            .is_a(trianglePrefab)
-        );
-    entity.get_mut<Material>()->color = Color32::BLACK;
-    
-    entity = Nametag::AddTo(ecs, Entity::Create(ecs, "Entity4", Vec3::DOWN + Vec3::RIGHT, Vec3::ZERO, Vec3::ONE * 0.1f)
-            .is_a(squarePrefab)
-        );
-    entity.get_mut<Material>()->color = Color32::CYAN;
+        entity.get_mut<Material>()->color = Color32::FromFloat(transform.position.x, transform.position.y, transform.position.z);
+    }
 
     ecs.system<Player, Transform, LinearKinematics>()
         .kind(stages->Update)
