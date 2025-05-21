@@ -36,3 +36,7 @@ clean:
 # Clean all build artifacts
 clean-all: clean
     if (Test-Path build) { Remove-Item -Recurse -Force build }
+
+# Initialize and update git submodules to their designated commits
+sync-submodules:
+    git submodule update --init --recursive
