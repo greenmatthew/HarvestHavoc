@@ -1,0 +1,3 @@
+[submodule "libs/velecs"]
+	path = libs/velecs
+	url = https://github.com/greenmatthew/velecs-cpp.git
