@@ -25,9 +25,14 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT H
 add_subdirectory(libs)
 add_subdirectory(assets)
 
-# Define the HarvestHavoc executable
-file(GLOB_RECURSE HARVEST_HAVOC_HEADERS "include/*.h")
-file(GLOB_RECURSE HARVEST_HAVOC_SOURCES "src/*.cpp")
+# Define explicit source and header files instead of globbing
+set(HARVEST_HAVOC_SOURCES
+    src/Main.cpp
+)
+
+set(HARVEST_HAVOC_HEADERS
+    # include/SomeHeader.hpp
+)
 
 add_executable(HarvestHavoc ${HARVEST_HAVOC_SOURCES} ${HARVEST_HAVOC_HEADERS} src/version.rc)
 
@@ -38,7 +43,9 @@ set_target_properties(HarvestHavoc PROPERTIES
 target_include_directories(HarvestHavoc PUBLIC include)
 
 # Link against velecs library
-target_link_libraries(HarvestHavoc PRIVATE velecs)
+target_link_libraries(HarvestHavoc
+    PRIVATE velecs-engine
+)
 
 add_dependencies(HarvestHavoc assets)
 
