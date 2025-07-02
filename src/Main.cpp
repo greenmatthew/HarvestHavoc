@@ -12,23 +12,53 @@
 
 // #include "ECS/ECSManager.h"
 
-#include "velecs/engine/Engine.hpp"
+#include <velecs/engine/Engine.hpp>
+using namespace velecs::engine;
 
-int main(int argc, char *argv[])
+#define SDL_MAIN_USE_CALLBACKS
+#include <SDL3/SDL_main.h>
+#include <SDL3/SDL_init.h>
+
+#include <iostream>
+
+SDL_AppResult SDL_AppInit(void **engine, int argc, char **argv)
 {
-    // auto &engine = velecs::VelECSEngine{};
-
-    // engine.SetECS(std::make_unique<hh::ECSManager>(engine))
-    //     .Run();
-
-    // return 0;
-
-    auto engine = velecs::engine::Engine::Create()
-        .SetTitle("Harvest Havoc")
-        .Init()
-        .Run()
-        .Cleanup()
+    *engine = Engine::Create();
+    Engine& engineRef = *static_cast<Engine*>(*engine);
+    engineRef.SetTitle("Harvest Havoc")
+        .SetWindowFullscreen(false)
         ;
     
-    return EXIT_SUCCESS;
+    return engineRef.Init();
+}
+
+SDL_AppResult SDL_AppIterate(void *engine)
+{
+    Engine& engineRef = *static_cast<Engine*>(engine);
+
+    engineRef.Update();
+
+    return SDL_AppResult::SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppEvent(void *engine, SDL_Event *event)
+{
+    switch (event->type)
+    {
+    case SDL_EVENT_QUIT:
+        return SDL_AppResult::SDL_APP_SUCCESS;
+    }
+
+    Engine& engineRef = *static_cast<Engine*>(engine);
+
+    engineRef.ProcessSDLEvent(*event);
+
+    return SDL_AppResult::SDL_APP_CONTINUE;
+}
+
+void SDL_AppQuit(void *engine, SDL_AppResult result)
+{
+    Engine* enginePtr = static_cast<Engine*>(engine);
+    enginePtr->Cleanup();
+    delete enginePtr;
 }
