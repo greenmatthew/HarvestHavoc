@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT HarvestHavoc)
 
 # Add subdirectories
-add_subdirectory(libs)
+add_subdirectory(libs/velecs)
 
 # Define source files
 set(HARVEST_HAVOC_SOURCES
