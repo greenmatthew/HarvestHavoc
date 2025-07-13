@@ -30,6 +30,10 @@ set(HARVEST_HAVOC_HEADERS
     # include/SampleHeader.hpp
 )
 
+
+
+
+
 # Create executable
 add_executable(HarvestHavoc ${HARVEST_HAVOC_SOURCES} ${HARVEST_HAVOC_HEADERS} src/version.rc)
 
@@ -45,3 +49,6 @@ set_target_properties(HarvestHavoc PROPERTIES
 target_link_libraries(HarvestHavoc
     PRIVATE velecs-engine
 )
+
+include(libs/velecs/cmake/ProcessAssets.cmake)
+setup_assets(HarvestHavoc)
