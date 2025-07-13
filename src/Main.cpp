@@ -21,44 +21,78 @@ using namespace velecs::engine;
 
 #include <iostream>
 
-SDL_AppResult SDL_AppInit(void **engine, int argc, char **argv)
+SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
-    *engine = Engine::Create();
-    Engine& engineRef = *static_cast<Engine*>(*engine);
-    engineRef.SetTitle("Harvest Havoc")
-        .SetWindowFullscreen(false)
-        ;
-    
-    return engineRef.Init();
+    try {
+        *engine = Engine::Create(argc, argv);
+        Engine& engineRef = *static_cast<Engine*>(*engine);
+        engineRef.SetTitle("Harvest Havoc")
+            .SetWindowFullscreen(false);
+        
+        return engineRef.Init();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error during initialization: " << e.what() << std::endl;
+        return SDL_APP_FAILURE;
+    }
+    catch (...) {
+        std::cerr << "Unknown error during initialization" << std::endl;
+        return SDL_APP_FAILURE;
+    }
 }
 
 SDL_AppResult SDL_AppIterate(void *engine)
 {
-    Engine& engineRef = *static_cast<Engine*>(engine);
-
-    engineRef.Update();
-
-    return SDL_AppResult::SDL_APP_CONTINUE;
+    try {
+        Engine& engineRef = *static_cast<Engine*>(engine);
+        engineRef.Update();
+        return SDL_APP_CONTINUE;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error during update: " << e.what() << std::endl;
+        return SDL_APP_FAILURE; // This will cause SDL to quit gracefully
+    }
+    catch (...) {
+        std::cerr << "Unknown error during update" << std::endl;
+        return SDL_APP_FAILURE;
+    }
 }
 
 SDL_AppResult SDL_AppEvent(void *engine, SDL_Event *event)
 {
-    switch (event->type)
-    {
-    case SDL_EVENT_QUIT:
-        return SDL_AppResult::SDL_APP_SUCCESS;
+    try {
+        switch (event->type)
+        {
+        case SDL_EVENT_QUIT:
+            return SDL_APP_SUCCESS;
+        }
+
+        Engine& engineRef = *static_cast<Engine*>(engine);
+        engineRef.ProcessSDLEvent(*event);
+        return SDL_APP_CONTINUE;
     }
-
-    Engine& engineRef = *static_cast<Engine*>(engine);
-
-    engineRef.ProcessSDLEvent(*event);
-
-    return SDL_AppResult::SDL_APP_CONTINUE;
+    catch (const std::exception& e) {
+        std::cerr << "Error during event processing: " << e.what() << std::endl;
+        return SDL_APP_FAILURE;
+    }
+    catch (...) {
+        std::cerr << "Unknown error during event processing" << std::endl;
+        return SDL_APP_FAILURE;
+    }
 }
 
 void SDL_AppQuit(void *engine, SDL_AppResult result)
 {
-    Engine* enginePtr = static_cast<Engine*>(engine);
-    enginePtr->Cleanup();
-    delete enginePtr;
+    try
+    {
+        Engine* enginePtr = static_cast<Engine*>(engine);
+        enginePtr->Cleanup();
+        delete enginePtr;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error during app quit: " << e.what() << std::endl;
+    }
+    catch (...) {
+        std::cerr << "Unknown error during app quit" << std::endl;
+    }
 }
