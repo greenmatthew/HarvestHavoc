@@ -17,12 +17,18 @@ using namespace velecs::engine;
 
 #include <iostream>
 
+void EntryPoint()
+{
+    std::cout << "Hello World!" << std::endl;
+}
+
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
     *engine = Engine::Create(argc, argv);
     Engine& engineRef = *static_cast<Engine*>(*engine);
     engineRef.SetTitle("Harvest Havoc")
         .SetWindowFullscreen(false)
+        .SetEntryPoint(EntryPoint)
         ;
 
     return Engine::SDL_AppInit(engine, argc, argv);
