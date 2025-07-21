@@ -24,14 +24,12 @@ void EntryPoint()
 
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
-    *engine = Engine::Create(argc, argv);
-    Engine& engineRef = *static_cast<Engine*>(*engine);
-    engineRef.SetTitle("Harvest Havoc")
-        .SetWindowFullscreen(false)
-        .SetEntryPoint(EntryPoint)
-        ;
-
-    return Engine::SDL_AppInit(engine, argc, argv);
+    return Engine::SDL_AppInit(engine, argc, argv, [](Engine& engine) {
+        engine.SetTitle("Harvest Havoc")
+            .SetWindowFullscreen(false)
+            .SetEntryPoint(EntryPoint)
+            ;
+    });
 }
 
 SDL_AppResult SDL_AppIterate(void *engine)
