@@ -11,6 +11,16 @@
 #include <velecs/engine/Engine.hpp>
 using namespace velecs::engine;
 
+#include <velecs/math/Vec3.hpp>
+using namespace velecs::math;
+
+#include <velecs/ecs/Common.hpp>
+using namespace velecs::ecs;
+
+#include <velecs/graphics/Components/MeshRenderer.hpp>
+#include <velecs/graphics/Components/PerspectiveCamera.hpp>
+using namespace velecs::graphics;
+
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_init.h>
@@ -19,7 +29,32 @@ using namespace velecs::engine;
 
 void EntryPoint()
 {
-    std::cout << "Hello World!" << std::endl;
+    auto& registry = Registry::Get();
+
+    Entity cameraEntity = Entity::Create()
+        .WithName("Main Camera")
+        .WithPos(Vec3::BACKWARD * -10.0f);
+        ;
+    auto& camera = cameraEntity.AddComponent<PerspectiveCamera>();
+    camera.GetViewMatrix();
+    camera.GetProjectionMatrix();
+    std::cout << "Camera's name: " << camera.GetOwner().GetName() << std::endl;
+
+    
+    auto view = registry.view<Camera>();
+    std::cout << "Number of cameras in the scene: " << std::distance(view.begin(), view.end()) << std::endl;
+    std::cout << "Is there cameras in the scene: " << (view.begin() != view.end()) << std::endl;
+    auto view2 = registry.view<PerspectiveCamera>();
+    std::cout << "Number of perspective cameras in the scene: " << std::distance(view2.begin(), view2.end()) << std::endl;
+    std::cout << "Is there perspective cameras in the scene: " << (view2.begin() != view2.end()) << std::endl;
+
+    Entity entity = Entity::Create()
+        .WithName("Test")
+        .WithPos(Vec3::RIGHT * 1.0f)
+        ;
+    
+    auto& renderer = entity.AddComponent<MeshRenderer>();
+    renderer.mesh = Mesh::CreateFrom("internal/meshes/equilateral_triangle.obj");
 }
 
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
