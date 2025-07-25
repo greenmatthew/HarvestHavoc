@@ -29,24 +29,11 @@ using namespace velecs::graphics;
 
 void EntryPoint()
 {
-    auto& registry = Registry::Get();
-
     Entity cameraEntity = Entity::Create()
         .WithName("Main Camera")
         .WithPos(Vec3::BACKWARD * -10.0f);
         ;
     auto& camera = cameraEntity.AddComponent<PerspectiveCamera>();
-    camera.GetViewMatrix();
-    camera.GetProjectionMatrix();
-    std::cout << "Camera's name: " << camera.GetOwner().GetName() << std::endl;
-
-    
-    auto view = registry.view<Camera>();
-    std::cout << "Number of cameras in the scene: " << std::distance(view.begin(), view.end()) << std::endl;
-    std::cout << "Is there cameras in the scene: " << (view.begin() != view.end()) << std::endl;
-    auto view2 = registry.view<PerspectiveCamera>();
-    std::cout << "Number of perspective cameras in the scene: " << std::distance(view2.begin(), view2.end()) << std::endl;
-    std::cout << "Is there perspective cameras in the scene: " << (view2.begin() != view2.end()) << std::endl;
 
     Entity entity = Entity::Create()
         .WithName("Test")
