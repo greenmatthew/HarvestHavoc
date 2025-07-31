@@ -26,30 +26,42 @@ using namespace velecs::graphics;
 #include <SDL3/SDL_init.h>
 
 #include <iostream>
+#include <string>
 
-void EntryPoint()
+class MainScene : public Scene
 {
-    Entity cameraEntity = Entity::Create()
-        .WithName("Main Camera")
-        .WithPos(Vec3::BACKWARD * -10.0f);
-        ;
-    auto& camera = cameraEntity.AddComponent<PerspectiveCamera>();
+public:
+    MainScene(const std::string& name, ConstructorKey key)
+        : Scene(name, key) {}
 
-    Entity entity = Entity::Create()
-        .WithName("Test")
-        .WithPos(Vec3::RIGHT * 1.0f)
-        ;
-    
-    auto& renderer = entity.AddComponent<MeshRenderer>();
-    renderer.mesh = Mesh::CreateFrom("internal/meshes/equilateral_triangle.obj");
-}
+private:
+    void OnEnter() override
+    {
+        Entity cameraEntity = CreateEntity()
+            .WithName("Main Camera")
+            .WithPos(Vec3::BACKWARD * -10.0f);
+            ;
+        PerspectiveCamera* camera{nullptr};
+        cameraEntity.TryAddComponent(camera);
+
+        Entity entity = CreateEntity()
+            .WithName("Test")
+            .WithPos(Vec3::RIGHT * 1.0f)
+            ;
+        
+        MeshRenderer* renderer{nullptr};
+        entity.TryAddComponent(renderer);
+        renderer->mesh = Mesh::CreateFrom("internal/meshes/equilateral_triangle.obj");
+    }
+};
 
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
     return Engine::SDL_AppInit(engine, argc, argv, [](Engine& engine) {
         engine.SetTitle("Harvest Havoc")
             .SetWindowFullscreen(false)
-            .SetEntryPoint(EntryPoint)
+            .RegisterScene<MainScene>("Main Scene")
+            .SetStartingScene("Main Scene")
             ;
     });
 }
