@@ -25,11 +25,21 @@ using namespace velecs::graphics;
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_init.h>
 
+#include <imgui.h>
+
 #include <iostream>
 #include <string>
 
-class MainScene : public Scene
-{
+class ImGUIDemoWindow : public System {
+protected:
+    void ProcessGUI(void* context) override
+    {
+        // Some imgui UI to test
+        ImGui::ShowDemoWindow();
+    }
+};
+
+class MainScene : public Scene {
 public:
     MainScene(const std::string& name, ConstructorKey key)
         : Scene(name, key) {}
@@ -37,6 +47,8 @@ public:
 private:
     void OnEnter() override
     {
+        // TryAddSystem<ImGUIDemoWindow>();
+
         Entity cameraEntity = CreateEntity()
             .WithName("Main Camera")
             .WithPos(Vec3::BACKWARD * -10.0f);
