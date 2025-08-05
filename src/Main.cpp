@@ -70,7 +70,9 @@ private:
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
     return Engine::SDL_AppInit(engine, argc, argv, [](Engine& engine) {
-        engine.SetTitle("Harvest Havoc")
+        engine
+            .SetCompanyName("Matthew Green")
+            .SetAppTitle("Harvest Havoc")
             .SetWindowFullscreen(false)
             .RegisterScene<MainScene>("Main Scene")
             .SetStartingScene("Main Scene")
