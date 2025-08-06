@@ -19,6 +19,7 @@ using namespace velecs::ecs;
 
 #include <velecs/graphics/Components/MeshRenderer.hpp>
 #include <velecs/graphics/Components/PerspectiveCamera.hpp>
+#include <velecs/graphics/Shader/ShaderPrograms/RasterizationShaderProgram.hpp>
 using namespace velecs::graphics;
 
 #define SDL_MAIN_USE_CALLBACKS
@@ -67,15 +68,34 @@ private:
     }
 };
 
+class ShaderCustomTest1 : public RasterizationShaderProgram {
+public:
+    ShaderCustomTest1()
+    {
+        SetVertexShader(VertexShader::FromFile("internal/shaders/simple_triangle_test.vert.spv"));
+        SetFragmentShader(FragmentShader::FromFile("internal/shaders/simple_triangle_test.frag.spv"));
+
+        pipelineBuilder.SetTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+            .SetPolygonMode(VK_POLYGON_MODE_FILL)
+            .SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_COUNTER_CLOCKWISE)
+            .SetMultisamplingNone()
+            .DisableBlending()
+            .DisableDepthTest()
+            .SetDepthFormat(VK_FORMAT_UNDEFINED)
+            ;
+    }
+};
+
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
     return Engine::SDL_AppInit(engine, argc, argv, [](Engine& engine) {
-        engine
-            .SetCompanyName("Matthew Green")
+        engine.SetCompanyName("Matthew Green")
             .SetAppTitle("Harvest Havoc")
             .SetWindowFullscreen(false)
             .RegisterScene<MainScene>("Main Scene")
             .SetStartingScene("Main Scene")
+            .Init()
+            .RegisterRasterizationShaderProgram<ShaderCustomTest1>("Custom/Test1")
             ;
     });
 }
