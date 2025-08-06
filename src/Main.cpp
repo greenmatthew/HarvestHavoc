@@ -95,7 +95,7 @@ SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
             .RegisterScene<MainScene>("Main Scene")
             .SetStartingScene("Main Scene")
             .Init()
-            .RegisterRasterizationShaderProgram<ShaderCustomTest1>("Custom/Test1")
+            // .RegisterRasterizationShaderProgram<ShaderCustomTest1>("Custom/Test1")
             ;
     });
 }
