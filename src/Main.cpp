@@ -42,29 +42,47 @@ protected:
 
 class MainScene : public Scene {
 public:
-    MainScene(const std::string& name, ConstructorKey key)
-        : Scene(name, key) {}
+    MainScene(World* const world, const std::string& name, ConstructorKey key)
+        : Scene(world, name, key) {}
+    
+    MainScene(World* const world, const std::string& name, size_t systemCapacity, ConstructorKey key)
+        : Scene(world, name, systemCapacity, key) {}
 
 private:
-    void OnEnter() override
+    void OnEnter(void* context) override
     {
+        auto ctx = Context<void>(context);
         // TryAddSystem<ImGUIDemoWindow>();
 
-        Entity cameraEntity = CreateEntity()
+        // auto program = RasterizationShaderProgram::Create(this->GetAssetRegistry(), "Custom/Test1");
+        // program.Set...
+        // ...
+        // auto mat = Material::Create(this->GetAssetRegistry());
+        // mat.SetShader("Custom/Test1");
+        // or maybe also:
+        // mat.SetShader(program);
+        // auto entity = Entity::Create(this);
+        // auto renderer = entity.TryAddComponent<MeshRenderer>();
+        // renderer.SetMesh(Mesh::Create(this->GetAssetRegistry(), "internal/meshes/monkey.obj"));
+        // renderer.SetMaterial(mat)
+
+        Entity* cameraEntity = Entity::Create(this)
             .WithName("Main Camera")
             .WithPos(Vec3::BACKWARD * -10.0f);
             ;
         PerspectiveCamera* camera{nullptr};
-        cameraEntity.TryAddComponent(camera);
+        cameraEntity->TryAddComponent(camera);
 
-        Entity entity = CreateEntity()
+        Entity* entity = Entity::Create(this)
             .WithName("Test")
             .WithPos(Vec3::RIGHT * 1.0f)
             ;
         
         MeshRenderer* renderer{nullptr};
-        entity.TryAddComponent(renderer);
+        entity->TryAddComponent(renderer);
         renderer->mesh = Mesh::CreateFrom("internal/meshes/equilateral_triangle.obj");
+        renderer->mat = Material::Create();
+        renderer->mat->TrySetShaderProgram("Custom/Test1");
     }
 };
 
