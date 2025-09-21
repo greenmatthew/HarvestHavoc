@@ -21,17 +21,17 @@
     - Shader Toolchain Debug Symbols - 64-bit
     - Vulkan Memory Allocator header.
 
-    ![Screenshot of Installer](docs/README.md/build/vulkan_installer_v1-4-313-0.png)
+    ![Screenshot of Installer](docs/media/build/vulkan_installer_v1-4-313-0.png)
 
 3. After installation, verify the environment variables:
 
 - Open the Environment Variables window (Press `Win + R`, enter `rundll32 sysdm.cpl,EditEnvironmentVariables`, and hit `Enter`).
 
-    ![Opening Environment Variables Menu](docs/README.md/build/opening_env_vars_menu.png)
+    ![Opening Environment Variables Menu](docs/media/build/opening_env_vars_menu.png)
 
 - Ensure the `VULKAN_SDK` variable is set correctly under 'System variables'.
 
-    ![VULKAN_SDK Environment Variable](docs/README.md/build/vulkan_env_vars_v1-4-313-0.png)
+    ![VULKAN_SDK Environment Variable](docs/media/build/vulkan_env_vars_v1-4-313-0.png)
 
 ---
 
@@ -102,7 +102,7 @@ winget install Kitware.CMake
 1. In the installer interface, look for the "Workloads" tab.
 2. Under this tab, find and select the "Desktop development with C++" workload. This workload includes the C++ compiler, standard libraries, and other necessary tools needed to compile the project.
 
-![Showing the Installer with the Desktop development with C++ workload selected](docs/README.md/build/vs_workload_selection.png)
+![Showing the Installer with the Desktop development with C++ workload selected](docs/media/build/vs_workload_selection.png)
 
 #### 4. Complete the Installation:
 
@@ -140,7 +140,7 @@ winget install Kitware.CMake
 1. Visit the [GitHub repository](https://github.com/greenmatthew/HarvestHavoc) or the my [personal Git website repository](https://git.matthewgreen.gg/mgreen/HarvestHavoc).
 2. Navigate to the latest release and download the 'Source Code (zip)'.
 
-   ![Download the Latest Release's Source Code](docs/README.md/build/download_latest_release_source_code.png)
+   ![Download the Latest Release's Source Code](docs/media/build/download_latest_release_source_code.png)
 
 3. Extract the .zip file to your preferred location.
 
