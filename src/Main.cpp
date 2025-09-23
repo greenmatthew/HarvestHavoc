@@ -42,13 +42,9 @@ protected:
 
 class MainScene : public Scene {
 public:
-    MainScene(World* const world, const std::string& name, ConstructorKey key)
-        : Scene(world, name, key) {}
-    
-    MainScene(World* const world, const std::string& name, size_t systemCapacity, ConstructorKey key)
-        : Scene(world, name, systemCapacity, key) {}
+    MainScene(World* const world, const std::string& name, size_t systemCapacity)
+        : Scene(world, name, systemCapacity) {}
 
-private:
     void OnEnter(void* context) override
     {
         auto ctx = Context<void>(context);
@@ -80,29 +76,29 @@ private:
         
         MeshRenderer* renderer{nullptr};
         entity->TryAddComponent(renderer);
-        renderer->mesh = Mesh::CreateFrom("internal/meshes/equilateral_triangle.obj");
-        renderer->mat = Material::Create();
+        renderer->mesh = Mesh::CreateFrom(GetWorld(), "internal/meshes/equilateral_triangle.obj");
+        renderer->mat = Material::Create(GetWorld(), "Test Material");
         renderer->mat->TrySetShaderProgram("Custom/Test1");
     }
 };
 
-class ShaderCustomTest1 : public RasterizationShaderProgram {
-public:
-    ShaderCustomTest1()
-    {
-        SetVertexShader(VertexShader::FromFile("internal/shaders/simple_triangle_test.vert.spv"));
-        SetFragmentShader(FragmentShader::FromFile("internal/shaders/simple_triangle_test.frag.spv"));
+// class ShaderCustomTest1 : public RasterizationShaderProgram {
+// public:
+//     ShaderCustomTest1()
+//     {
+//         SetVertexShader(VertexShader::FromFile("internal/shaders/simple_triangle_test.vert.spv"));
+//         SetFragmentShader(FragmentShader::FromFile("internal/shaders/simple_triangle_test.frag.spv"));
 
-        pipelineBuilder.SetTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
-            .SetPolygonMode(VK_POLYGON_MODE_FILL)
-            .SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_COUNTER_CLOCKWISE)
-            .SetMultisamplingNone()
-            .DisableBlending()
-            .DisableDepthTest()
-            .SetDepthFormat(VK_FORMAT_UNDEFINED)
-            ;
-    }
-};
+//         pipelineBuilder.SetTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+//             .SetPolygonMode(VK_POLYGON_MODE_FILL)
+//             .SetCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_COUNTER_CLOCKWISE)
+//             .SetMultisamplingNone()
+//             .DisableBlending()
+//             .DisableDepthTest()
+//             .SetDepthFormat(VK_FORMAT_UNDEFINED)
+//             ;
+//     }
+// };
 
 SDL_AppResult SDL_AppInit(void **engine, int argc, char** argv)
 {
